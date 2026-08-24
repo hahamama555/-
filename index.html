@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>タップ⭕️つけツール</title>
 
 <style>
+
 * {
   box-sizing: border-box;
 }
@@ -17,28 +19,36 @@ body {
   font-family: sans-serif;
 }
 
+/* 操作バー */
 .toolbar {
   position: sticky;
   top: 0;
   z-index: 10;
+
   display: flex;
   gap: 8px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+
   padding: 8px;
   background: #222;
 }
 
+/* ボタン */
 button,
 .fileBtn {
   border: none;
   border-radius: 10px;
+
   padding: 10px 14px;
+
   font-size: 15px;
   font-weight: bold;
+
   color: #111;
   background: white;
+
   cursor: pointer;
 }
 
@@ -46,83 +56,149 @@ button,
   display: none;
 }
 
-.hint {
-  font-size: 12px;
+/* サイズ変更 */
+.size-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 13px;
+  color: white;
 }
 
+#circleSize {
+  width: 100px;
+}
+
+/* 画像 */
 #board {
   position: relative;
+
   width: min(100vw, 1024px);
+
   margin: 0 auto;
+
   line-height: 0;
+
   touch-action: manipulation;
   user-select: none;
 }
 
 #board img {
   display: block;
+
   width: 100%;
   height: auto;
+
   pointer-events: none;
 }
 
+/* ⭕️ */
 .circle {
   position: absolute;
+
   width: 34px;
   height: 34px;
+
   border: 4px solid red;
+
   border-radius: 50%;
+
   transform: translate(-50%, -50%);
+
   pointer-events: none;
 }
 
 @media (max-width: 600px) {
-  .circle {
-    width: 30px;
-    height: 30px;
-    border-width: 3px;
-  }
 
   button,
   .fileBtn {
     padding: 9px 12px;
     font-size: 14px;
   }
+
+  .size-control {
+    font-size: 12px;
+  }
+
 }
+
 </style>
 </head>
 
+
 <body>
+
+
+<!-- =========================
+     操作ボタン
+========================= -->
 
 <div class="toolbar">
 
+
   <!-- 画像変更 -->
+
   <label class="fileBtn">
+
     🖼️ 画像を変更
+
     <input
       id="imageFile"
       type="file"
       accept="image/*"
     >
+
   </label>
 
+
+  <!-- ⭕️サイズ -->
+
+  <div class="size-control">
+
+    ⭕️サイズ
+
+    <input
+      type="range"
+      id="circleSize"
+      min="15"
+      max="150"
+      value="40"
+    >
+
+    <span id="sizeValue">
+      40px
+    </span>
+
+  </div>
+
+
   <!-- 1つ戻す -->
+
   <button id="undo">
+
     ↩ 1つ戻す
+
   </button>
+
 
   <!-- 全部消す -->
+
   <button id="clear">
+
     ⭕️ 全部消す
+
   </button>
 
-  <span class="hint">
-    画像をタップ → 赤い⭕️
-  </span>
 
 </div>
 
-<!-- 画像表示エリア -->
+
+
+<!-- =========================
+     画像表示
+========================= -->
+
 <div id="board">
 
   <img
@@ -133,116 +209,265 @@ button,
 
 </div>
 
+
+
 <script>
 
-const board = document.getElementById("board");
-const base = document.getElementById("base");
 
-const imageFile = document.getElementById("imageFile");
-const undo = document.getElementById("undo");
-const clear = document.getElementById("clear");
+/* =========================
+   要素
+========================= */
+
+const board =
+  document.getElementById("board");
+
+const base =
+  document.getElementById("base");
+
+const imageFile =
+  document.getElementById("imageFile");
+
+const undo =
+  document.getElementById("undo");
+
+const clear =
+  document.getElementById("clear");
+
+const circleSize =
+  document.getElementById("circleSize");
+
+const sizeValue =
+  document.getElementById("sizeValue");
+
+
+/* ⭕️一覧 */
 
 let circles = [];
 
 
-/* =========================
-   画像を変更
-========================= */
-
-imageFile.addEventListener("change", function(e) {
-
-  const file = e.target.files[0];
-
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-
-  base.onload = function() {
-    URL.revokeObjectURL(url);
-  };
-
-  base.src = url;
-
-  // 画像を変更したら⭕️をリセット
-  circles.forEach(function(circle) {
-    circle.remove();
-  });
-
-  circles = [];
-
-});
-
 
 /* =========================
-   ⭕️を付ける
+   ⭕️を作る
 ========================= */
 
 function addCircle(clientX, clientY) {
 
-  const rect = board.getBoundingClientRect();
+  const rect =
+    board.getBoundingClientRect();
 
-  const x = clientX - rect.left;
-  const y = clientY - rect.top;
 
-  const circle = document.createElement("div");
+  const x =
+    clientX - rect.left;
 
-  circle.className = "circle";
+  const y =
+    clientY - rect.top;
 
-  circle.style.left = x + "px";
-  circle.style.top = y + "px";
+
+  const circle =
+    document.createElement("div");
+
+
+  circle.className =
+    "circle";
+
+
+  circle.style.left =
+    x + "px";
+
+  circle.style.top =
+    y + "px";
+
+
+  /* 現在のサイズ */
+
+  const size =
+    circleSize.value;
+
+
+  circle.style.width =
+    size + "px";
+
+  circle.style.height =
+    size + "px";
+
+
+  /* 枠線もサイズに合わせる */
+
+  circle.style.borderWidth =
+    Math.max(2, size / 10) + "px";
+
 
   board.appendChild(circle);
 
+
   circles.push(circle);
+
 }
+
 
 
 /* =========================
    画像をタップ
 ========================= */
 
-board.addEventListener("pointerup", function(e) {
+board.addEventListener(
+  "pointerup",
+  function(e) {
 
-  if (
-    e.target !== board &&
-    e.target.id !== "base"
-  ) {
-    return;
+    if (
+      e.target !== board &&
+      e.target.id !== "base"
+    ) {
+      return;
+    }
+
+
+    addCircle(
+      e.clientX,
+      e.clientY
+    );
+
   }
+);
 
-  addCircle(e.clientX, e.clientY);
 
-});
+
+/* =========================
+   ⭕️サイズ変更
+========================= */
+
+circleSize.addEventListener(
+  "input",
+  function() {
+
+    const size =
+      Number(this.value);
+
+
+    /* サイズ表示 */
+
+    sizeValue.textContent =
+      size + "px";
+
+
+    /* すでにある⭕️も変更 */
+
+    circles.forEach(
+      function(circle) {
+
+        circle.style.width =
+          size + "px";
+
+        circle.style.height =
+          size + "px";
+
+
+        circle.style.borderWidth =
+          Math.max(
+            2,
+            size / 10
+          ) + "px";
+
+      }
+    );
+
+  }
+);
+
+
+
+/* =========================
+   画像変更
+========================= */
+
+imageFile.addEventListener(
+  "change",
+  function(e) {
+
+    const file =
+      e.target.files[0];
+
+
+    if (!file) return;
+
+
+    const url =
+      URL.createObjectURL(file);
+
+
+    base.onload =
+      function() {
+
+        URL.revokeObjectURL(url);
+
+      };
+
+
+    base.src = url;
+
+
+    /* 画像変更時は⭕️を消す */
+
+    circles.forEach(
+      function(circle) {
+
+        circle.remove();
+
+      }
+    );
+
+
+    circles = [];
+
+  }
+);
+
 
 
 /* =========================
    1つ戻す
 ========================= */
 
-undo.addEventListener("click", function() {
+undo.addEventListener(
+  "click",
+  function() {
 
-  const circle = circles.pop();
+    const circle =
+      circles.pop();
 
-  if (circle) {
-    circle.remove();
+
+    if (circle) {
+
+      circle.remove();
+
+    }
+
   }
+);
 
-});
 
 
 /* =========================
    全部消す
 ========================= */
 
-clear.addEventListener("click", function() {
+clear.addEventListener(
+  "click",
+  function() {
 
-  circles.forEach(function(circle) {
-    circle.remove();
-  });
+    circles.forEach(
+      function(circle) {
 
-  circles = [];
+        circle.remove();
 
-});
+      }
+    );
+
+
+    circles = [];
+
+  }
+);
 
 </script>
 
