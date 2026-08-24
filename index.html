@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
       content="width=device-width,
       initial-scale=1.0,
@@ -168,6 +169,13 @@ button,
 #markSize {
 
   width: 100px;
+
+  /*
+    最小8px
+    最大150px
+  */
+
+  min-width: 100px;
 }
 
 
@@ -263,12 +271,14 @@ button,
     font-size: 14px;
   }
 
+
   .mark-control,
   .color-control,
   .size-control {
 
     font-size: 12px;
   }
+
 
   #markInput {
 
@@ -277,6 +287,22 @@ button,
     height: 36px;
 
     font-size: 20px;
+  }
+
+
+  #markColor {
+
+    width: 40px;
+
+    height: 36px;
+  }
+
+
+  #markSize {
+
+    width: 90px;
+
+    min-width: 90px;
   }
 
 }
@@ -351,7 +377,7 @@ button,
     <input
       type="range"
       id="markSize"
-      min="15"
+      min="8"
       max="150"
       value="40"
     >
