@@ -1,1 +1,250 @@
-# -
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>タップ⭕️つけツール</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: sans-serif;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 8px;
+  background: #222;
+}
+
+button,
+.fileBtn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #111;
+  background: white;
+  cursor: pointer;
+}
+
+.fileBtn input {
+  display: none;
+}
+
+.hint {
+  font-size: 12px;
+}
+
+#board {
+  position: relative;
+  width: min(100vw, 1024px);
+  margin: 0 auto;
+  line-height: 0;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+#board img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.circle {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: 4px solid red;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .circle {
+    width: 30px;
+    height: 30px;
+    border-width: 3px;
+  }
+
+  button,
+  .fileBtn {
+    padding: 9px 12px;
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="toolbar">
+
+  <!-- 画像変更 -->
+  <label class="fileBtn">
+    🖼️ 画像を変更
+    <input
+      id="imageFile"
+      type="file"
+      accept="image/*"
+    >
+  </label>
+
+  <!-- 1つ戻す -->
+  <button id="undo">
+    ↩ 1つ戻す
+  </button>
+
+  <!-- 全部消す -->
+  <button id="clear">
+    ⭕️ 全部消す
+  </button>
+
+  <span class="hint">
+    画像をタップ → 赤い⭕️
+  </span>
+
+</div>
+
+<!-- 画像表示エリア -->
+<div id="board">
+
+  <img
+    id="base"
+    src="https://picsum.photos/800/1000"
+    alt="タップして⭕️を付ける画像"
+  >
+
+</div>
+
+<script>
+
+const board = document.getElementById("board");
+const base = document.getElementById("base");
+
+const imageFile = document.getElementById("imageFile");
+const undo = document.getElementById("undo");
+const clear = document.getElementById("clear");
+
+let circles = [];
+
+
+/* =========================
+   画像を変更
+========================= */
+
+imageFile.addEventListener("change", function(e) {
+
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  const url = URL.createObjectURL(file);
+
+  base.onload = function() {
+    URL.revokeObjectURL(url);
+  };
+
+  base.src = url;
+
+  // 画像を変更したら⭕️をリセット
+  circles.forEach(function(circle) {
+    circle.remove();
+  });
+
+  circles = [];
+
+});
+
+
+/* =========================
+   ⭕️を付ける
+========================= */
+
+function addCircle(clientX, clientY) {
+
+  const rect = board.getBoundingClientRect();
+
+  const x = clientX - rect.left;
+  const y = clientY - rect.top;
+
+  const circle = document.createElement("div");
+
+  circle.className = "circle";
+
+  circle.style.left = x + "px";
+  circle.style.top = y + "px";
+
+  board.appendChild(circle);
+
+  circles.push(circle);
+}
+
+
+/* =========================
+   画像をタップ
+========================= */
+
+board.addEventListener("pointerup", function(e) {
+
+  if (
+    e.target !== board &&
+    e.target.id !== "base"
+  ) {
+    return;
+  }
+
+  addCircle(e.clientX, e.clientY);
+
+});
+
+
+/* =========================
+   1つ戻す
+========================= */
+
+undo.addEventListener("click", function() {
+
+  const circle = circles.pop();
+
+  if (circle) {
+    circle.remove();
+  }
+
+});
+
+
+/* =========================
+   全部消す
+========================= */
+
+clear.addEventListener("click", function() {
+
+  circles.forEach(function(circle) {
+    circle.remove();
+  });
+
+  circles = [];
+
+});
+
+</script>
+
+</body>
+</html>
