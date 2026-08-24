@@ -2,9 +2,13 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no">
 
-<title>タップ⭕️つけツール</title>
+<title>自由マークつけツール</title>
 
 <style>
 
@@ -19,26 +23,40 @@ body {
   font-family: sans-serif;
 }
 
-/* 操作バー */
+
+/* =========================
+   操作バー
+========================= */
+
 .toolbar {
+
   position: sticky;
   top: 0;
   z-index: 10;
 
   display: flex;
   gap: 8px;
+
   align-items: center;
   justify-content: center;
+
   flex-wrap: wrap;
 
   padding: 8px;
+
   background: #222;
 }
 
-/* ボタン */
+
+/* =========================
+   ボタン
+========================= */
+
 button,
 .fileBtn {
+
   border: none;
+
   border-radius: 10px;
 
   padding: 10px 14px;
@@ -52,26 +70,121 @@ button,
   cursor: pointer;
 }
 
+
 .fileBtn input {
   display: none;
 }
 
-/* サイズ変更 */
-.size-control {
+
+/* =========================
+   マーク入力
+========================= */
+
+.mark-control {
+
   display: flex;
+
   align-items: center;
+
+  gap: 5px;
+
+  font-size: 13px;
+}
+
+
+#markInput {
+
+  width: 85px;
+
+  height: 38px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 5px 8px;
+
+  font-size: 22px;
+
+  text-align: center;
+
+  background: white;
+
+  color: #111;
+}
+
+
+/* =========================
+   マーク色
+========================= */
+
+.color-control {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  font-size: 13px;
+}
+
+
+#markColor {
+
+  width: 45px;
+  height: 38px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 2px;
+
+  background: white;
+
+  cursor: pointer;
+}
+
+
+/* =========================
+   サイズ変更
+========================= */
+
+.size-control {
+
+  display: flex;
+
+  align-items: center;
+
   gap: 6px;
 
   font-size: 13px;
+
   color: white;
 }
 
-#circleSize {
+
+#markSize {
+
   width: 100px;
 }
 
-/* 画像 */
+
+#sizeValue {
+
+  min-width: 45px;
+
+  text-align: center;
+}
+
+
+/* =========================
+   画像
+========================= */
+
 #board {
+
   position: relative;
 
   width: min(100vw, 1024px);
@@ -81,44 +194,89 @@ button,
   line-height: 0;
 
   touch-action: manipulation;
+
   user-select: none;
 }
 
+
 #board img {
+
   display: block;
 
   width: 100%;
+
   height: auto;
 
   pointer-events: none;
 }
 
-/* ⭕️ */
-.circle {
+
+/* =========================
+   自由マーク
+========================= */
+
+.mark {
+
   position: absolute;
-
-  width: 34px;
-  height: 34px;
-
-  border: 4px solid red;
-
-  border-radius: 50%;
 
   transform: translate(-50%, -50%);
 
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  white-space: nowrap;
+
+  line-height: 1;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans",
+    sans-serif;
+
+  font-weight: 900;
+
   pointer-events: none;
+
+  user-select: none;
+
+  text-shadow:
+    1px 1px 2px rgba(0,0,0,0.35);
 }
+
+
+/* =========================
+   スマホ
+========================= */
 
 @media (max-width: 600px) {
 
   button,
   .fileBtn {
+
     padding: 9px 12px;
+
     font-size: 14px;
   }
 
+  .mark-control,
+  .color-control,
   .size-control {
+
     font-size: 12px;
+  }
+
+  #markInput {
+
+    width: 70px;
+
+    height: 36px;
+
+    font-size: 20px;
   }
 
 }
@@ -131,7 +289,7 @@ button,
 
 
 <!-- =========================
-     操作ボタン
+     操作バー
 ========================= -->
 
 <div class="toolbar">
@@ -152,15 +310,47 @@ button,
   </label>
 
 
-  <!-- ⭕️サイズ -->
+  <!-- マーク入力 -->
+
+  <div class="mark-control">
+
+    ✏️ マーク
+
+    <input
+      id="markInput"
+      type="text"
+      value="⭕️"
+      maxlength="10"
+      placeholder="例：🍩"
+    >
+
+  </div>
+
+
+  <!-- マーク色 -->
+
+  <div class="color-control">
+
+    🎨 色
+
+    <input
+      id="markColor"
+      type="color"
+      value="#ff0000"
+    >
+
+  </div>
+
+
+  <!-- サイズ -->
 
   <div class="size-control">
 
-    ⭕️サイズ
+    📏 サイズ
 
     <input
       type="range"
-      id="circleSize"
+      id="markSize"
       min="15"
       max="150"
       value="40"
@@ -186,7 +376,7 @@ button,
 
   <button id="clear">
 
-    ⭕️ 全部消す
+    🗑️ 全部消す
 
   </button>
 
@@ -196,7 +386,7 @@ button,
 
 
 <!-- =========================
-     画像表示
+     画像
 ========================= -->
 
 <div id="board">
@@ -204,7 +394,7 @@ button,
   <img
     id="base"
     src="https://picsum.photos/800/1000"
-    alt="タップして⭕️を付ける画像"
+    alt="タップしてマークを付ける画像"
   >
 
 </div>
@@ -227,30 +417,37 @@ const base =
 const imageFile =
   document.getElementById("imageFile");
 
+const markInput =
+  document.getElementById("markInput");
+
+const markColor =
+  document.getElementById("markColor");
+
+const markSize =
+  document.getElementById("markSize");
+
+const sizeValue =
+  document.getElementById("sizeValue");
+
 const undo =
   document.getElementById("undo");
 
 const clear =
   document.getElementById("clear");
 
-const circleSize =
-  document.getElementById("circleSize");
 
-const sizeValue =
-  document.getElementById("sizeValue");
+/* =========================
+   マーク一覧
+========================= */
 
-
-/* ⭕️一覧 */
-
-let circles = [];
-
+let marks = [];
 
 
 /* =========================
-   ⭕️を作る
+   マークを追加
 ========================= */
 
-function addCircle(clientX, clientY) {
+function addMark(clientX, clientY) {
 
   const rect =
     board.getBoundingClientRect();
@@ -263,51 +460,62 @@ function addCircle(clientX, clientY) {
     clientY - rect.top;
 
 
-  const circle =
+  /* 入力されたマーク */
+
+  let text =
+    markInput.value;
+
+
+  /* 空欄なら⭕️ */
+
+  if (text.trim() === "") {
+
+    text = "⭕️";
+
+  }
+
+
+  /* マーク作成 */
+
+  const mark =
     document.createElement("div");
 
 
-  circle.className =
-    "circle";
+  mark.className =
+    "mark";
 
 
-  circle.style.left =
+  mark.textContent =
+    text;
+
+
+  mark.style.left =
     x + "px";
 
-  circle.style.top =
+
+  mark.style.top =
     y + "px";
 
 
-  /* 現在のサイズ */
-
-  const size =
-    circleSize.value;
+  mark.style.fontSize =
+    markSize.value + "px";
 
 
-  circle.style.width =
-    size + "px";
-
-  circle.style.height =
-    size + "px";
+  mark.style.color =
+    markColor.value;
 
 
-  /* 枠線もサイズに合わせる */
-
-  circle.style.borderWidth =
-    Math.max(2, size / 10) + "px";
+  board.appendChild(mark);
 
 
-  board.appendChild(circle);
-
-
-  circles.push(circle);
+  marks.push(mark);
 
 }
 
 
 
 /* =========================
-   画像をタップ
+   画像タップ
 ========================= */
 
 board.addEventListener(
@@ -318,11 +526,13 @@ board.addEventListener(
       e.target !== board &&
       e.target.id !== "base"
     ) {
+
       return;
+
     }
 
 
-    addCircle(
+    addMark(
       e.clientX,
       e.clientY
     );
@@ -333,10 +543,10 @@ board.addEventListener(
 
 
 /* =========================
-   ⭕️サイズ変更
+   サイズ変更
 ========================= */
 
-circleSize.addEventListener(
+markSize.addEventListener(
   "input",
   function() {
 
@@ -344,32 +554,69 @@ circleSize.addEventListener(
       Number(this.value);
 
 
-    /* サイズ表示 */
-
     sizeValue.textContent =
       size + "px";
 
 
-    /* すでにある⭕️も変更 */
+    /* すでに置いたマークも変更 */
 
-    circles.forEach(
-      function(circle) {
+    marks.forEach(
+      function(mark) {
 
-        circle.style.width =
+        mark.style.fontSize =
           size + "px";
-
-        circle.style.height =
-          size + "px";
-
-
-        circle.style.borderWidth =
-          Math.max(
-            2,
-            size / 10
-          ) + "px";
 
       }
     );
+
+  }
+);
+
+
+
+/* =========================
+   色変更
+========================= */
+
+markColor.addEventListener(
+  "input",
+  function() {
+
+    const color =
+      this.value;
+
+
+    /* すでに置いたマークも変更 */
+
+    marks.forEach(
+      function(mark) {
+
+        mark.style.color =
+          color;
+
+      }
+    );
+
+  }
+);
+
+
+
+/* =========================
+   マーク変更
+========================= */
+
+markInput.addEventListener(
+  "input",
+  function() {
+
+    /*
+      新しく置くマークから
+      入力内容が反映されます。
+
+      すでに置いたマークは
+      そのまま残します。
+    */
 
   }
 );
@@ -403,21 +650,23 @@ imageFile.addEventListener(
       };
 
 
-    base.src = url;
+    base.src =
+      url;
 
 
-    /* 画像変更時は⭕️を消す */
+    /* 画像変更時は
+       マークを全部消す */
 
-    circles.forEach(
-      function(circle) {
+    marks.forEach(
+      function(mark) {
 
-        circle.remove();
+        mark.remove();
 
       }
     );
 
 
-    circles = [];
+    marks = [];
 
   }
 );
@@ -432,13 +681,13 @@ undo.addEventListener(
   "click",
   function() {
 
-    const circle =
-      circles.pop();
+    const mark =
+      marks.pop();
 
 
-    if (circle) {
+    if (mark) {
 
-      circle.remove();
+      mark.remove();
 
     }
 
@@ -455,16 +704,16 @@ clear.addEventListener(
   "click",
   function() {
 
-    circles.forEach(
-      function(circle) {
+    marks.forEach(
+      function(mark) {
 
-        circle.remove();
+        mark.remove();
 
       }
     );
 
 
-    circles = [];
+    marks = [];
 
   }
 );
