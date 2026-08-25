@@ -30,10 +30,9 @@ body {
 ========================= */
 
 .toolbar {
-
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
 
   display: flex;
   gap: 8px;
@@ -69,6 +68,8 @@ button,
   background: white;
 
   cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -170,11 +171,6 @@ button,
 
   width: 100px;
 
-  /*
-    最小8px
-    最大150px
-  */
-
   min-width: 100px;
 }
 
@@ -248,12 +244,41 @@ button,
 
   font-weight: 900;
 
-  pointer-events: none;
+  /*
+    重要：
+    マーク自体をタップできるようにする
+  */
+  pointer-events: auto;
 
   user-select: none;
 
+  cursor: pointer;
+
+  touch-action: manipulation;
+
+  -webkit-tap-highlight-color: transparent;
+
   text-shadow:
     1px 1px 2px rgba(0,0,0,0.35);
+}
+
+
+/* =========================
+   上書き時の説明
+========================= */
+
+.help {
+
+  width: 100%;
+
+  text-align: center;
+
+  font-size: 12px;
+
+  color: #ddd;
+
+  margin-top: -2px;
+
 }
 
 
@@ -392,20 +417,20 @@ button,
   <!-- 1つ戻す -->
 
   <button id="undo">
-
     ↩ 1つ戻す
-
   </button>
 
 
   <!-- 全部消す -->
 
   <button id="clear">
-
     🗑️ 全部消す
-
   </button>
 
+
+  <div class="help">
+    マークをタップすると、現在のマークで上書きできます
+  </div>
 
 </div>
 
@@ -470,7 +495,93 @@ let marks = [];
 
 
 /* =========================
-   マークを追加
+   現在のマーク文字を取得
+========================= */
+
+function getMarkText() {
+
+  let text =
+    markInput.value;
+
+  if (text.trim() === "") {
+
+    text = "⭕️";
+
+  }
+
+  return text;
+
+}
+
+
+/* =========================
+   マークを作成
+========================= */
+
+function createMark(x, y) {
+
+  const mark =
+    document.createElement("div");
+
+  mark.className =
+    "mark";
+
+
+  /* マーク文字 */
+
+  mark.textContent =
+    getMarkText();
+
+
+  /* 位置 */
+
+  mark.style.left =
+    x + "px";
+
+  mark.style.top =
+    y + "px";
+
+
+  /* サイズ */
+
+  mark.style.fontSize =
+    markSize.value + "px";
+
+
+  /* 色 */
+
+  mark.style.color =
+    markColor.value;
+
+
+  /*
+    マーク自身をタップした場合
+    → そのマークを現在の設定で上書き
+  */
+
+  mark.addEventListener(
+    "pointerup",
+    function(e) {
+
+      e.stopPropagation();
+
+      replaceMark(mark);
+
+    }
+  );
+
+
+  board.appendChild(mark);
+
+  marks.push(mark);
+
+  return mark;
+
+}
+
+
+/* =========================
+   マーク追加
 ========================= */
 
 function addMark(clientX, clientY) {
@@ -486,58 +597,58 @@ function addMark(clientX, clientY) {
     clientY - rect.top;
 
 
-  /* 入力されたマーク */
+  createMark(x, y);
 
-  let text =
-    markInput.value;
+}
 
 
-  /* 空欄なら⭕️ */
+/* =========================
+   既存マークを上書き
+========================= */
 
-  if (text.trim() === "") {
+function replaceMark(oldMark) {
 
-    text = "⭕️";
+  /*
+    元の位置を取得
+  */
+
+  const x =
+    parseFloat(oldMark.style.left);
+
+  const y =
+    parseFloat(oldMark.style.top);
+
+
+  /*
+    古いマークを一覧から削除
+  */
+
+  const index =
+    marks.indexOf(oldMark);
+
+
+  if (index !== -1) {
+
+    marks.splice(index, 1);
 
   }
 
 
-  /* マーク作成 */
+  /*
+    古いマークを画面から削除
+  */
 
-  const mark =
-    document.createElement("div");
-
-
-  mark.className =
-    "mark";
+  oldMark.remove();
 
 
-  mark.textContent =
-    text;
+  /*
+    同じ場所に
+    新しいマークを置く
+  */
 
-
-  mark.style.left =
-    x + "px";
-
-
-  mark.style.top =
-    y + "px";
-
-
-  mark.style.fontSize =
-    markSize.value + "px";
-
-
-  mark.style.color =
-    markColor.value;
-
-
-  board.appendChild(mark);
-
-
-  marks.push(mark);
+  createMark(x, y);
 
 }
-
 
 
 /* =========================
@@ -548,9 +659,14 @@ board.addEventListener(
   "pointerup",
   function(e) {
 
+    /*
+      マークをタップした場合は
+      マーク側で処理するので
+      ここでは何もしない
+    */
+
     if (
-      e.target !== board &&
-      e.target.id !== "base"
+      e.target.classList.contains("mark")
     ) {
 
       return;
@@ -558,14 +674,25 @@ board.addEventListener(
     }
 
 
-    addMark(
-      e.clientX,
-      e.clientY
-    );
+    /*
+      画像部分をタップした場合
+      新しいマークを追加
+    */
+
+    if (
+      e.target === board ||
+      e.target === base
+    ) {
+
+      addMark(
+        e.clientX,
+        e.clientY
+      );
+
+    }
 
   }
 );
-
 
 
 /* =========================
@@ -584,7 +711,10 @@ markSize.addEventListener(
       size + "px";
 
 
-    /* すでに置いたマークも変更 */
+    /*
+      すでに置いたマークも
+      全部サイズ変更
+    */
 
     marks.forEach(
       function(mark) {
@@ -599,7 +729,6 @@ markSize.addEventListener(
 );
 
 
-
 /* =========================
    色変更
 ========================= */
@@ -612,7 +741,10 @@ markColor.addEventListener(
       this.value;
 
 
-    /* すでに置いたマークも変更 */
+    /*
+      すでに置いたマークも
+      全部色変更
+    */
 
     marks.forEach(
       function(mark) {
@@ -627,7 +759,6 @@ markColor.addEventListener(
 );
 
 
-
 /* =========================
    マーク変更
 ========================= */
@@ -637,8 +768,9 @@ markInput.addEventListener(
   function() {
 
     /*
-      新しく置くマークから
-      入力内容が反映されます。
+      新しく置くマーク、
+      または上書きするマークに
+      この文字が使われます。
 
       すでに置いたマークは
       そのまま残します。
@@ -646,7 +778,6 @@ markInput.addEventListener(
 
   }
 );
-
 
 
 /* =========================
@@ -680,8 +811,10 @@ imageFile.addEventListener(
       url;
 
 
-    /* 画像変更時は
-       マークを全部消す */
+    /*
+      画像変更時は
+      マークを全部消す
+    */
 
     marks.forEach(
       function(mark) {
@@ -696,7 +829,6 @@ imageFile.addEventListener(
 
   }
 );
-
 
 
 /* =========================
@@ -719,7 +851,6 @@ undo.addEventListener(
 
   }
 );
-
 
 
 /* =========================
