@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
 
 <meta charset="UTF-8">
@@ -12,11 +13,12 @@
 
 <title>自由マークつけツール</title>
 
+
 <style>
 
-/* =========================
-   基本
-========================= */
+/* =================================
+   基本設定
+================================= */
 
 * {
   box-sizing: border-box;
@@ -24,6 +26,7 @@
 
 html,
 body {
+
   margin: 0;
   padding: 0;
 
@@ -32,12 +35,13 @@ body {
   color: white;
 
   font-family: sans-serif;
+
 }
 
 
-/* =========================
+/* =================================
    操作バー
-========================= */
+================================= */
 
 .toolbar {
 
@@ -63,12 +67,13 @@ body {
 
   box-shadow:
     0 2px 8px rgba(0,0,0,0.5);
+
 }
 
 
-/* =========================
+/* =================================
    ボタン
-========================= */
+================================= */
 
 button,
 .fileBtn {
@@ -94,7 +99,9 @@ button,
   -webkit-user-select: none;
 
   -webkit-tap-highlight-color: transparent;
+
 }
+
 
 button:active,
 .fileBtn:active {
@@ -111,6 +118,7 @@ button:active,
   align-items: center;
 
   justify-content: center;
+
 }
 
 
@@ -121,9 +129,9 @@ button:active,
 }
 
 
-/* =========================
+/* =================================
    マーク入力
-========================= */
+================================= */
 
 .mark-control {
 
@@ -134,6 +142,7 @@ button:active,
   gap: 5px;
 
   font-size: 13px;
+
 }
 
 
@@ -141,9 +150,7 @@ button:active,
 
   width: 130px;
 
-  min-height: 58px;
-
-  max-height: 100px;
+  height: 58px;
 
   resize: vertical;
 
@@ -155,7 +162,7 @@ button:active,
 
   font-size: 20px;
 
-  line-height: 1.2;
+  line-height: 1.1;
 
   text-align: center;
 
@@ -164,12 +171,13 @@ button:active,
   color: #111;
 
   font-family: sans-serif;
+
 }
 
 
-/* =========================
+/* =================================
    色
-========================= */
+================================= */
 
 .color-control {
 
@@ -180,6 +188,7 @@ button:active,
   gap: 5px;
 
   font-size: 13px;
+
 }
 
 
@@ -198,12 +207,13 @@ button:active,
   background: white;
 
   cursor: pointer;
+
 }
 
 
-/* =========================
+/* =================================
    サイズ
-========================= */
+================================= */
 
 .size-control {
 
@@ -213,15 +223,16 @@ button:active,
 
   gap: 6px;
 
-  font-size: 13px;
-
-  color: white;
-
-  padding: 4px 6px;
+  padding: 5px 7px;
 
   border-radius: 8px;
 
   background: #333;
+
+  font-size: 13px;
+
+  color: white;
+
 }
 
 
@@ -232,6 +243,7 @@ button:active,
   min-width: 120px;
 
   cursor: pointer;
+
 }
 
 
@@ -242,34 +254,37 @@ button:active,
   text-align: center;
 
   font-weight: bold;
+
 }
 
 
-/* =========================
-   選択中表示
-========================= */
+/* =================================
+   選択情報
+================================= */
 
 #selectedInfo {
 
-  min-width: 100px;
+  min-width: 90px;
 
   text-align: center;
 
   font-size: 12px;
 
   color: #ffff00;
+
 }
 
 
-/* =========================
+/* =================================
    消しゴム
-========================= */
+================================= */
 
 #eraseMode {
 
   background: #ffdddd;
 
   color: #b00000;
+
 }
 
 
@@ -281,153 +296,13 @@ button:active,
 
   box-shadow:
     0 0 8px rgba(255,0,0,0.7);
-}
-
-
-/* =========================
-   画像エリア
-========================= */
-
-#board {
-
-  position: relative;
-
-  width: min(100vw, 1024px);
-
-  margin: 0 auto;
-
-  line-height: 0;
-
-  overflow: hidden;
-
-  user-select: none;
-
-  -webkit-user-select: none;
-
-  touch-action: manipulation;
-}
-
-
-#board img {
-
-  display: block;
-
-  width: 100%;
-
-  height: auto;
-
-  pointer-events: none;
-
-  user-select: none;
-
-  -webkit-user-drag: none;
-}
-
-
-/* =========================
-   マーク
-========================= */
-
-.mark {
-
-  position: absolute;
-
-  transform: translate(-50%, -50%);
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  white-space: pre-line;
-
-  text-align: center;
-
-  line-height: 1.05;
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "Noto Sans",
-    sans-serif;
-
-  font-weight: 900;
-
-  pointer-events: auto;
-
-  touch-action: none;
-
-  user-select: none;
-
-  -webkit-user-select: none;
-
-  cursor: grab;
-
-  padding: 3px;
-
-  max-width: 90%;
-
-  overflow-wrap: anywhere;
-
-  text-shadow:
-    1px 1px 2px rgba(0,0,0,0.35);
-
-  /*
-    移動時に形を変えない
-  */
-
-  transition: none;
-
-  will-change:
-    left,
-    top,
-    font-size;
-}
-
-
-/* =========================
-   選択中
-========================= */
-
-.mark.selected {
-
-  outline: 2px dashed #ffff00;
-
-  outline-offset: 4px;
-
-  z-index: 100;
-}
-
-
-/* =========================
-   ドラッグ中
-========================= */
-
-.mark.dragging {
-
-  cursor: grabbing;
 
 }
 
 
-/* =========================
-   上書き表示
-========================= */
-
-.mark.overwrite-target {
-
-  outline: 3px dashed #00ff00;
-
-  outline-offset: 4px;
-
-}
-
-
-/* =========================
+/* =================================
    説明
-========================= */
+================================= */
 
 .help {
 
@@ -446,20 +321,236 @@ button:active,
   line-height: 1.5;
 
   text-align: center;
+
 }
 
 
-/* =========================
+/* =================================
+   画像ボード
+================================= */
+
+#board {
+
+  position: relative;
+
+  width: min(100vw, 1024px);
+
+  margin: 0 auto;
+
+  line-height: 0;
+
+  overflow: hidden;
+
+  user-select: none;
+
+  -webkit-user-select: none;
+
+  /*
+    画像をタップするため
+  */
+
+  touch-action: manipulation;
+
+}
+
+
+#board img {
+
+  display: block;
+
+  width: 100%;
+
+  height: auto;
+
+  pointer-events: none;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+
+}
+
+
+/* =================================
+   マーク本体
+================================= */
+
+.mark {
+
+  position: absolute;
+
+  /*
+    中心位置を基準にする
+  */
+
+  transform: translate3d(
+    -50%,
+    -50%,
+    0
+  );
+
+  /*
+    display:blockにして
+    ブラウザによる自動配置を防ぐ
+  */
+
+  display: block;
+
+  /*
+    入力した改行を完全に維持
+  */
+
+  white-space: pre;
+
+  /*
+    自動折り返しを禁止
+  */
+
+  overflow: visible;
+
+  /*
+    文字位置
+  */
+
+  text-align: center;
+
+  /*
+    行間固定
+  */
+
+  line-height: 1.05;
+
+  /*
+    フォント
+  */
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans",
+    sans-serif;
+
+  font-weight: 900;
+
+  /*
+    幅を文字内容に合わせて固定
+  */
+
+  width: max-content;
+
+  /*
+    高さも文字内容に合わせる
+  */
+
+  height: max-content;
+
+  /*
+    文字の自動折り返しを防止
+  */
+
+  overflow-wrap: normal;
+
+  word-break: normal;
+
+  word-wrap: normal;
+
+  /*
+    マーク自体を操作可能にする
+  */
+
+  pointer-events: auto;
+
+  touch-action: none;
+
+  user-select: none;
+
+  -webkit-user-select: none;
+
+  /*
+    移動中のアニメーションなし
+  */
+
+  transition: none;
+
+  /*
+    位置だけ変更する
+  */
+
+  will-change:
+    left,
+    top;
+
+  /*
+    文字の見やすさ
+  */
+
+  text-shadow:
+    1px 1px 2px rgba(0,0,0,0.35);
+
+  /*
+    カーソル
+  */
+
+  cursor: grab;
+
+}
+
+
+/* =================================
+   選択中
+================================= */
+
+.mark.selected {
+
+  outline:
+    2px dashed #ffff00;
+
+  outline-offset: 4px;
+
+  z-index: 100;
+
+}
+
+
+/* =================================
+   ドラッグ中
+================================= */
+
+.mark.dragging {
+
+  cursor: grabbing;
+
+}
+
+
+/* =================================
+   上書き時
+================================= */
+
+.mark.overwrite-target {
+
+  outline:
+    3px dashed #00ff00;
+
+  outline-offset: 4px;
+
+}
+
+
+/* =================================
    スマホ
-========================= */
+================================= */
 
 @media (max-width: 600px) {
+
 
   .toolbar {
 
     gap: 6px;
 
     padding: 6px;
+
   }
 
 
@@ -469,6 +560,7 @@ button:active,
     padding: 8px 10px;
 
     font-size: 13px;
+
   }
 
 
@@ -477,6 +569,7 @@ button:active,
   .size-control {
 
     font-size: 12px;
+
   }
 
 
@@ -484,9 +577,10 @@ button:active,
 
     width: 110px;
 
-    min-height: 54px;
+    height: 54px;
 
     font-size: 18px;
+
   }
 
 
@@ -495,6 +589,7 @@ button:active,
     width: 40px;
 
     height: 36px;
+
   }
 
 
@@ -503,14 +598,16 @@ button:active,
     width: 100px;
 
     min-width: 100px;
+
   }
 
 
   #selectedInfo {
 
-    min-width: 80px;
+    min-width: 75px;
 
     font-size: 11px;
+
   }
 
 
@@ -519,6 +616,7 @@ button:active,
     font-size: 12px;
 
     padding: 6px;
+
   }
 
 }
@@ -531,9 +629,9 @@ button:active,
 <body>
 
 
-<!-- =========================
+<!-- =================================
      操作バー
-========================= -->
+================================= -->
 
 <div class="toolbar">
 
@@ -640,29 +738,30 @@ button:active,
 
   </button>
 
+
 </div>
 
 
-<!-- =========================
-     説明
-========================= -->
+<!-- =================================
+     操作説明
+================================= -->
 
 <div class="help">
 
-  画像をタップ＝マーク追加　
-  ／　
-  マークをタップ＝選択　
-  ／　
-  選択したマークをドラッグ＝移動　
-  ／　
-  サイズバー＝選択中のマークだけ変更
+  画像をタップ → マーク追加　
+  ｜　
+  マークをタップ → 選択　
+  ｜　
+  ドラッグ → 移動　
+  ｜　
+  サイズバー → 選択中だけ拡大・縮小
 
 </div>
 
 
-<!-- =========================
+<!-- =================================
      画像
-========================= -->
+================================= -->
 
 <div id="board">
 
@@ -679,9 +778,9 @@ button:active,
 <script>
 
 
-/* =========================
-   要素
-========================= */
+/* =================================
+   要素取得
+================================= */
 
 const board =
   document.getElementById("board");
@@ -717,30 +816,30 @@ const clear =
   document.getElementById("clear");
 
 
-/* =========================
+/* =================================
    マーク一覧
-========================= */
+================================= */
 
 let marks = [];
 
 
-/* =========================
-   現在選択中のマーク
-========================= */
+/* =================================
+   選択中マーク
+================================= */
 
 let selectedMark = null;
 
 
-/* =========================
-   消しゴム
-========================= */
+/* =================================
+   消しゴムモード
+================================= */
 
 let isEraseMode = false;
 
 
-/* =========================
-   文字取得
-========================= */
+/* =================================
+   入力文字取得
+================================= */
 
 function getMarkText() {
 
@@ -748,7 +847,9 @@ function getMarkText() {
     markInput.value;
 
 
-  if (text.trim() === "") {
+  if (
+    text.trim() === ""
+  ) {
 
     text = "⭕️";
 
@@ -760,14 +861,15 @@ function getMarkText() {
 }
 
 
-/* =========================
+/* =================================
    マーク選択
-========================= */
+================================= */
 
 function selectMark(mark) {
 
+
   /*
-    以前の選択を解除
+    すべての選択状態を解除
   */
 
   marks.forEach(
@@ -781,14 +883,11 @@ function selectMark(mark) {
   );
 
 
-  /*
-    新しいマークを選択
-  */
-
   selectedMark = mark;
 
 
   if (mark) {
+
 
     mark.classList.add(
       "selected"
@@ -796,7 +895,7 @@ function selectMark(mark) {
 
 
     /*
-      現在のサイズを
+      そのマークのサイズを
       バーに反映
     */
 
@@ -807,7 +906,7 @@ function selectMark(mark) {
 
 
     markSize.value =
-      Math.round(size);
+      size;
 
 
     sizeValue.textContent =
@@ -815,7 +914,7 @@ function selectMark(mark) {
 
 
     selectedInfo.textContent =
-      "選択中：このマーク";
+      "選択中";
 
   }
   else {
@@ -828,14 +927,20 @@ function selectMark(mark) {
 }
 
 
-/* =========================
+/* =================================
    マーク作成
-========================= */
+================================= */
 
-function createMark(x, y) {
+function createMark(
+  x,
+  y
+) {
+
 
   const mark =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   mark.className =
@@ -843,7 +948,9 @@ function createMark(x, y) {
 
 
   /*
-    文字
+    入力文字
+
+    改行もそのまま保存
   */
 
   mark.textContent =
@@ -857,20 +964,18 @@ function createMark(x, y) {
   mark.style.left =
     x + "px";
 
-
   mark.style.top =
     y + "px";
 
 
   /*
-    サイズ
-
-    新しく書く時は
-    サイズバーの値を使用
+    新規サイズ
   */
 
   const initialSize =
-    Number(markSize.value);
+    Number(
+      markSize.value
+    );
 
 
   mark.style.fontSize =
@@ -878,7 +983,15 @@ function createMark(x, y) {
 
 
   /*
-    データ保存
+    サイズを保存
+  */
+
+  mark.dataset.size =
+    initialSize;
+
+
+  /*
+    座標を保存
   */
 
   mark.dataset.x =
@@ -886,9 +999,6 @@ function createMark(x, y) {
 
   mark.dataset.y =
     y;
-
-  mark.dataset.size =
-    initialSize;
 
 
   /*
@@ -900,14 +1010,14 @@ function createMark(x, y) {
 
 
   /*
-    移動用
+    移動状態
   */
+
+  let pointerId = null;
 
   let dragging = false;
 
   let moved = false;
-
-  let pointerId = null;
 
   let startPointerX = 0;
 
@@ -918,13 +1028,14 @@ function createMark(x, y) {
   let startMarkY = y;
 
 
-  /* =========================
+  /* =================================
      pointerdown
-  ========================= */
+  ================================= */
 
   mark.addEventListener(
     "pointerdown",
     function(e) {
+
 
       e.preventDefault();
 
@@ -945,14 +1056,14 @@ function createMark(x, y) {
 
 
       /*
-        このマークを選択
+        選択
       */
 
       selectMark(mark);
 
 
       /*
-        ドラッグ開始
+        ポインター情報
       */
 
       pointerId =
@@ -962,7 +1073,6 @@ function createMark(x, y) {
       startPointerX =
         e.clientX;
 
-
       startPointerY =
         e.clientY;
 
@@ -971,7 +1081,6 @@ function createMark(x, y) {
         Number(
           mark.dataset.x
         );
-
 
       startMarkY =
         Number(
@@ -990,19 +1099,21 @@ function createMark(x, y) {
           e.pointerId
         );
 
-      } catch(error) {}
+      }
+      catch(error) {}
 
     }
   );
 
 
-  /* =========================
+  /* =================================
      pointermove
-  ========================= */
+  ================================= */
 
   mark.addEventListener(
     "pointermove",
     function(e) {
+
 
       if (
         pointerId !==
@@ -1030,8 +1141,8 @@ function createMark(x, y) {
 
 
       /*
-        少し動いたら
-        ドラッグ開始
+        3px以上動いたら
+        ドラッグと判断
       */
 
       if (
@@ -1062,7 +1173,10 @@ function createMark(x, y) {
 
 
       /*
-        新しい位置
+        移動先
+
+        サイズ・文字内容には
+        一切触れない
       */
 
       let newX =
@@ -1074,7 +1188,7 @@ function createMark(x, y) {
 
 
       /*
-        画像の中に収める
+        ボード内に収める
       */
 
       newX =
@@ -1098,14 +1212,21 @@ function createMark(x, y) {
 
 
       /*
-        位置変更
+        位置だけ変更
 
-        サイズには触れない
+        ★重要★
+
+        fontSizeを変更しない
+
+        textContentを変更しない
+
+        widthを変更しない
+
+        heightを変更しない
       */
 
       mark.style.left =
         newX + "px";
-
 
       mark.style.top =
         newY + "px";
@@ -1114,7 +1235,6 @@ function createMark(x, y) {
       mark.dataset.x =
         newX;
 
-
       mark.dataset.y =
         newY;
 
@@ -1122,13 +1242,14 @@ function createMark(x, y) {
   );
 
 
-  /* =========================
+  /* =================================
      pointerup
-  ========================= */
+  ================================= */
 
   mark.addEventListener(
     "pointerup",
     function(e) {
+
 
       if (
         pointerId !==
@@ -1151,16 +1272,8 @@ function createMark(x, y) {
 
 
       /*
-        ドラッグ終了
-      */
-
-      dragging = false;
-
-      pointerId = null;
-
-
-      /*
         移動していない場合
+
         → 上書き
       */
 
@@ -1171,15 +1284,19 @@ function createMark(x, y) {
       }
 
 
+      dragging = false;
+
       moved = false;
+
+      pointerId = null;
 
     }
   );
 
 
-  /* =========================
+  /* =================================
      pointercancel
-  ========================= */
+  ================================= */
 
   mark.addEventListener(
     "pointercancel",
@@ -1200,7 +1317,7 @@ function createMark(x, y) {
 
 
   /*
-    画像に追加
+    ボードに追加
   */
 
   board.appendChild(mark);
@@ -1210,8 +1327,7 @@ function createMark(x, y) {
 
 
   /*
-    新しく作ったマークを
-    自動選択
+    作ったマークを選択
   */
 
   selectMark(mark);
@@ -1219,25 +1335,28 @@ function createMark(x, y) {
 }
 
 
-/* =========================
+/* =================================
    マーク追加
-========================= */
+================================= */
 
 function addMark(
   clientX,
   clientY
 ) {
 
+
   const rect =
     board.getBoundingClientRect();
 
 
   const x =
-    clientX - rect.left;
+    clientX -
+    rect.left;
 
 
   const y =
-    clientY - rect.top;
+    clientY -
+    rect.top;
 
 
   createMark(
@@ -1248,14 +1367,15 @@ function addMark(
 }
 
 
-/* =========================
-   上書き
-========================= */
+/* =================================
+   マーク上書き
+================================= */
 
 function overwriteMark(mark) {
 
+
   /*
-    現在のサイズを維持
+    現在のサイズを保存
   */
 
   const currentSize =
@@ -1265,7 +1385,9 @@ function overwriteMark(mark) {
 
 
   /*
-    入力文字
+    新しい文字に変更
+
+    改行もそのまま
   */
 
   mark.textContent =
@@ -1273,7 +1395,7 @@ function overwriteMark(mark) {
 
 
   /*
-    色だけ変更
+    色変更
   */
 
   mark.style.color =
@@ -1287,6 +1409,10 @@ function overwriteMark(mark) {
   mark.style.fontSize =
     currentSize + "px";
 
+
+  /*
+    上書きしたことを表示
+  */
 
   mark.classList.add(
     "overwrite-target"
@@ -1307,13 +1433,14 @@ function overwriteMark(mark) {
 }
 
 
-/* =========================
+/* =================================
    サイズ変更
-========================= */
+================================= */
 
 markSize.addEventListener(
   "input",
   function() {
+
 
     const size =
       Number(this.value);
@@ -1324,11 +1451,11 @@ markSize.addEventListener(
 
 
     /*
-      マークが選択されている場合
-      → そのマークだけ変更
+      選択中のマークだけ変更
     */
 
     if (selectedMark) {
+
 
       selectedMark.style.fontSize =
         size + "px";
@@ -1337,35 +1464,32 @@ markSize.addEventListener(
       selectedMark.dataset.size =
         size;
 
+
       return;
 
     }
 
 
     /*
-      未選択の場合
-
-      → 新しく書くマークの
-        初期サイズとして使用
-
-      既存マークは変更しない
+      未選択なら
+      新しく書くマークのサイズ
     */
 
   }
 );
 
 
-/* =========================
+/* =================================
    色変更
-========================= */
+================================= */
 
 markColor.addEventListener(
   "input",
   function() {
 
+
     /*
-      選択中なら
-      そのマークだけ色変更
+      選択中のマークだけ変更
     */
 
     if (selectedMark) {
@@ -1377,26 +1501,22 @@ markColor.addEventListener(
 
     }
 
-    /*
-      未選択なら
-      新しいマークの色になる
-    */
-
   }
 );
 
 
-/* =========================
+/* =================================
    画像タップ
-========================= */
+================================= */
 
 board.addEventListener(
   "pointerup",
   function(e) {
 
+
     /*
-      マークを触った場合
-      → ここでは何もしない
+      マークをタップした場合
+      ここでは新規作成しない
     */
 
     if (
@@ -1436,8 +1556,7 @@ board.addEventListener(
 
 
     /*
-      画像タップで
-      新しいマークを作る
+      新しいマークを追加
     */
 
     addMark(
@@ -1449,13 +1568,14 @@ board.addEventListener(
 );
 
 
-/* =========================
+/* =================================
    消しゴム
-========================= */
+================================= */
 
 eraseMode.addEventListener(
   "click",
   function() {
+
 
     isEraseMode =
       !isEraseMode;
@@ -1463,25 +1583,26 @@ eraseMode.addEventListener(
 
     if (isEraseMode) {
 
+
       eraseMode.textContent =
         "🧹 消しゴムON";
+
 
       eraseMode.classList.add(
         "active"
       );
 
-      /*
-        消しゴム中は
-        選択解除
-      */
 
       selectMark(null);
+
 
     }
     else {
 
+
       eraseMode.textContent =
         "🧹 消しゴム";
+
 
       eraseMode.classList.remove(
         "active"
@@ -1493,11 +1614,12 @@ eraseMode.addEventListener(
 );
 
 
-/* =========================
+/* =================================
    マーク削除
-========================= */
+================================= */
 
 function removeMark(mark) {
+
 
   const index =
     marks.indexOf(mark);
@@ -1512,10 +1634,6 @@ function removeMark(mark) {
 
   }
 
-
-  /*
-    選択中なら解除
-  */
 
   if (
     selectedMark === mark
@@ -1534,13 +1652,14 @@ function removeMark(mark) {
 }
 
 
-/* =========================
+/* =================================
    画像変更
-========================= */
+================================= */
 
 imageFile.addEventListener(
   "change",
   function(e) {
+
 
     const file =
       e.target.files[0];
@@ -1570,7 +1689,8 @@ imageFile.addEventListener(
 
 
     /*
-      マーク全削除
+      画像を変更したら
+      マークを全部削除
     */
 
     marks.forEach(
@@ -1584,9 +1704,7 @@ imageFile.addEventListener(
 
     marks = [];
 
-
     selectedMark = null;
-
 
     selectedInfo.textContent =
       "未選択";
@@ -1595,13 +1713,14 @@ imageFile.addEventListener(
 );
 
 
-/* =========================
+/* =================================
    1つ戻す
-========================= */
+================================= */
 
 undo.addEventListener(
   "click",
   function() {
+
 
     const mark =
       marks.pop();
@@ -1620,9 +1739,6 @@ undo.addEventListener(
 
       selectedMark = null;
 
-      selectedInfo.textContent =
-        "未選択";
-
     }
 
 
@@ -1630,7 +1746,7 @@ undo.addEventListener(
 
 
     /*
-      1つ前のマークを
+      一つ前のマークを
       選択状態にする
     */
 
@@ -1639,8 +1755,16 @@ undo.addEventListener(
     ) {
 
       selectMark(
-        marks[marks.length - 1]
+        marks[
+          marks.length - 1
+        ]
       );
+
+    }
+    else {
+
+      selectedInfo.textContent =
+        "未選択";
 
     }
 
@@ -1648,13 +1772,14 @@ undo.addEventListener(
 );
 
 
-/* =========================
+/* =================================
    全部消す
-========================= */
+================================= */
 
 clear.addEventListener(
   "click",
   function() {
+
 
     marks.forEach(
       function(mark) {
@@ -1667,7 +1792,6 @@ clear.addEventListener(
 
     marks = [];
 
-
     selectedMark = null;
 
 
@@ -1677,7 +1801,9 @@ clear.addEventListener(
   }
 );
 
+
 </script>
 
 </body>
+
 </html>
