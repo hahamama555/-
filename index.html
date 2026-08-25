@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -13,12 +14,18 @@
 
 <style>
 
+/* =========================
+   基本
+========================= */
+
 * {
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  padding: 0;
   background: #111;
   color: white;
   font-family: sans-serif;
@@ -30,11 +37,13 @@ body {
 ========================= */
 
 .toolbar {
+
   position: sticky;
   top: 0;
   z-index: 100;
 
   display: flex;
+
   gap: 8px;
 
   align-items: center;
@@ -45,6 +54,9 @@ body {
   padding: 8px;
 
   background: #222;
+
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.5);
 }
 
 
@@ -62,19 +74,43 @@ button,
   padding: 10px 14px;
 
   font-size: 15px;
+
   font-weight: bold;
 
   color: #111;
+
   background: white;
 
   cursor: pointer;
 
-  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+
+button:active,
+.fileBtn:active {
+
+  transform: scale(0.96);
+
+}
+
+
+/* 画像変更 */
+
+.fileBtn {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
 }
 
 
 .fileBtn input {
+
   display: none;
+
 }
 
 
@@ -94,25 +130,38 @@ button,
 }
 
 
+/*
+  2行入力できるように
+  input → textarea に変更
+*/
+
 #markInput {
 
-  width: 85px;
+  width: 130px;
 
-  height: 38px;
+  min-height: 58px;
+
+  max-height: 100px;
+
+  resize: vertical;
 
   border: none;
 
   border-radius: 8px;
 
-  padding: 5px 8px;
+  padding: 6px 8px;
 
-  font-size: 22px;
+  font-size: 20px;
+
+  line-height: 1.2;
 
   text-align: center;
 
   background: white;
 
   color: #111;
+
+  font-family: sans-serif;
 }
 
 
@@ -135,6 +184,7 @@ button,
 #markColor {
 
   width: 45px;
+
   height: 38px;
 
   border: none;
@@ -184,7 +234,30 @@ button,
 
 
 /* =========================
-   画像
+   消しゴム
+========================= */
+
+#eraseMode {
+
+  background: #ffdddd;
+
+  color: #b00000;
+}
+
+
+#eraseMode.active {
+
+  background: #ff3333;
+
+  color: white;
+
+  box-shadow:
+    0 0 8px rgba(255,0,0,0.7);
+}
+
+
+/* =========================
+   画像エリア
 ========================= */
 
 #board {
@@ -200,6 +273,8 @@ button,
   touch-action: manipulation;
 
   user-select: none;
+
+  overflow: hidden;
 }
 
 
@@ -231,9 +306,15 @@ button,
 
   justify-content: center;
 
-  white-space: nowrap;
+  /*
+    2行対応
+  */
 
-  line-height: 1;
+  white-space: pre-line;
+
+  text-align: center;
+
+  line-height: 1.05;
 
   font-family:
     -apple-system,
@@ -245,18 +326,28 @@ button,
   font-weight: 900;
 
   /*
-    重要：
-    マーク自体をタップできるようにする
+    既存マークをタップできるようにする
   */
+
   pointer-events: auto;
 
   user-select: none;
 
   cursor: pointer;
 
-  touch-action: manipulation;
+  /*
+    タップ範囲を少し広げる
+  */
 
-  -webkit-tap-highlight-color: transparent;
+  padding: 3px;
+
+  /*
+    文字が画像からはみ出しにくくする
+  */
+
+  max-width: 90%;
+
+  overflow-wrap: anywhere;
 
   text-shadow:
     1px 1px 2px rgba(0,0,0,0.35);
@@ -264,21 +355,38 @@ button,
 
 
 /* =========================
-   上書き時の説明
+   上書き中の表示
+========================= */
+
+.mark.overwrite-target {
+
+  outline: 3px dashed #ffff00;
+
+  outline-offset: 2px;
+}
+
+
+/* =========================
+   説明
 ========================= */
 
 .help {
 
-  width: 100%;
+  width: min(100vw, 1024px);
 
-  text-align: center;
+  margin: 0 auto;
 
-  font-size: 12px;
+  padding: 8px 12px;
+
+  background: #181818;
 
   color: #ddd;
 
-  margin-top: -2px;
+  font-size: 13px;
 
+  line-height: 1.5;
+
+  text-align: center;
 }
 
 
@@ -288,12 +396,20 @@ button,
 
 @media (max-width: 600px) {
 
+  .toolbar {
+
+    gap: 6px;
+
+    padding: 6px;
+  }
+
+
   button,
   .fileBtn {
 
-    padding: 9px 12px;
+    padding: 8px 10px;
 
-    font-size: 14px;
+    font-size: 13px;
   }
 
 
@@ -307,11 +423,11 @@ button,
 
   #markInput {
 
-    width: 70px;
+    width: 110px;
 
-    height: 36px;
+    min-height: 54px;
 
-    font-size: 20px;
+    font-size: 18px;
   }
 
 
@@ -325,14 +441,23 @@ button,
 
   #markSize {
 
-    width: 90px;
+    width: 85px;
 
-    min-width: 90px;
+    min-width: 85px;
+  }
+
+
+  .help {
+
+    font-size: 12px;
+
+    padding: 6px;
   }
 
 }
 
 </style>
+
 </head>
 
 
@@ -367,18 +492,16 @@ button,
 
     ✏️ マーク
 
-    <input
+    <textarea
       id="markInput"
-      type="text"
-      value="⭕️"
-      maxlength="10"
-      placeholder="例：🍩"
-    >
+      maxlength="30"
+      placeholder="例：⭕️&#10;名前"
+    >⭕️</textarea>
 
   </div>
 
 
-  <!-- マーク色 -->
+  <!-- 色 -->
 
   <div class="color-control">
 
@@ -414,26 +537,49 @@ button,
   </div>
 
 
+  <!-- 消しゴム -->
+
+  <button id="eraseMode">
+
+    🧹 消しゴム
+
+  </button>
+
+
   <!-- 1つ戻す -->
 
   <button id="undo">
+
     ↩ 1つ戻す
+
   </button>
 
 
   <!-- 全部消す -->
 
   <button id="clear">
+
     🗑️ 全部消す
+
   </button>
 
 
-  <div class="help">
-    マークをタップすると、現在のマークで上書きできます
-  </div>
-
 </div>
 
+
+<!-- =========================
+     操作説明
+========================= -->
+
+<div class="help">
+
+  画像をタップ → マークを追加　
+  ／　
+  置いたマークをタップ → 入力中の内容で上書き　
+  ／　
+  「消しゴム」→ マークをタップして削除
+
+</div>
 
 
 <!-- =========================
@@ -453,7 +599,6 @@ button,
 
 
 <script>
-
 
 /* =========================
    要素
@@ -480,6 +625,9 @@ const markSize =
 const sizeValue =
   document.getElementById("sizeValue");
 
+const eraseMode =
+  document.getElementById("eraseMode");
+
 const undo =
   document.getElementById("undo");
 
@@ -495,13 +643,25 @@ let marks = [];
 
 
 /* =========================
-   現在のマーク文字を取得
+   消しゴムモード
+========================= */
+
+let isEraseMode = false;
+
+
+/* =========================
+   マーク文字を取得
 ========================= */
 
 function getMarkText() {
 
   let text =
     markInput.value;
+
+  /*
+    完全に空欄の場合
+    ⭕️に戻す
+  */
 
   if (text.trim() === "") {
 
@@ -510,7 +670,6 @@ function getMarkText() {
   }
 
   return text;
-
 }
 
 
@@ -523,40 +682,38 @@ function createMark(x, y) {
   const mark =
     document.createElement("div");
 
+
   mark.className =
     "mark";
 
 
-  /* マーク文字 */
+  /*
+    textareaの改行を
+    そのまま表示する
+  */
 
   mark.textContent =
     getMarkText();
 
 
-  /* 位置 */
-
   mark.style.left =
     x + "px";
+
 
   mark.style.top =
     y + "px";
 
 
-  /* サイズ */
-
   mark.style.fontSize =
     markSize.value + "px";
 
-
-  /* 色 */
 
   mark.style.color =
     markColor.value;
 
 
   /*
-    マーク自身をタップした場合
-    → そのマークを現在の設定で上書き
+    マーク自身をタップした時
   */
 
   mark.addEventListener(
@@ -565,7 +722,27 @@ function createMark(x, y) {
 
       e.stopPropagation();
 
-      replaceMark(mark);
+
+      /*
+        消しゴムモード
+      */
+
+      if (isEraseMode) {
+
+        removeMark(mark);
+
+        return;
+
+      }
+
+
+      /*
+        通常モードなら
+        現在入力している内容で
+        上書き
+      */
+
+      overwriteMark(mark);
 
     }
   );
@@ -573,9 +750,8 @@ function createMark(x, y) {
 
   board.appendChild(mark);
 
-  marks.push(mark);
 
-  return mark;
+  marks.push(mark);
 
 }
 
@@ -593,6 +769,7 @@ function addMark(clientX, clientY) {
   const x =
     clientX - rect.left;
 
+
   const y =
     clientY - rect.top;
 
@@ -603,28 +780,66 @@ function addMark(clientX, clientY) {
 
 
 /* =========================
-   既存マークを上書き
+   マーク上書き
 ========================= */
 
-function replaceMark(oldMark) {
+function overwriteMark(mark) {
 
   /*
-    元の位置を取得
+    現在の入力内容に変更
   */
 
-  const x =
-    parseFloat(oldMark.style.left);
-
-  const y =
-    parseFloat(oldMark.style.top);
+  mark.textContent =
+    getMarkText();
 
 
   /*
-    古いマークを一覧から削除
+    色も現在の色に変更
   */
+
+  mark.style.color =
+    markColor.value;
+
+
+  /*
+    サイズも現在のサイズに変更
+  */
+
+  mark.style.fontSize =
+    markSize.value + "px";
+
+
+  /*
+    一瞬だけ黄色い枠を表示
+  */
+
+  mark.classList.add(
+    "overwrite-target"
+  );
+
+
+  setTimeout(
+    function() {
+
+      mark.classList.remove(
+        "overwrite-target"
+      );
+
+    },
+    300
+  );
+
+}
+
+
+/* =========================
+   マーク削除
+========================= */
+
+function removeMark(mark) {
 
   const index =
-    marks.indexOf(oldMark);
+    marks.indexOf(mark);
 
 
   if (index !== -1) {
@@ -634,19 +849,7 @@ function replaceMark(oldMark) {
   }
 
 
-  /*
-    古いマークを画面から削除
-  */
-
-  oldMark.remove();
-
-
-  /*
-    同じ場所に
-    新しいマークを置く
-  */
-
-  createMark(x, y);
+  mark.remove();
 
 }
 
@@ -675,21 +878,36 @@ board.addEventListener(
 
 
     /*
-      画像部分をタップした場合
-      新しいマークを追加
+      画像以外は無視
     */
 
     if (
-      e.target === board ||
-      e.target === base
+      e.target !== board &&
+      e.target !== base
     ) {
 
-      addMark(
-        e.clientX,
-        e.clientY
-      );
+      return;
 
     }
+
+
+    /*
+      消しゴムモード中は
+      空白部分をタップしても
+      何もしない
+    */
+
+    if (isEraseMode) {
+
+      return;
+
+    }
+
+
+    addMark(
+      e.clientX,
+      e.clientY
+    );
 
   }
 );
@@ -713,7 +931,7 @@ markSize.addEventListener(
 
     /*
       すでに置いたマークも
-      全部サイズ変更
+      サイズ変更
     */
 
     marks.forEach(
@@ -743,7 +961,7 @@ markColor.addEventListener(
 
     /*
       すでに置いたマークも
-      全部色変更
+      色変更
     */
 
     marks.forEach(
@@ -760,7 +978,7 @@ markColor.addEventListener(
 
 
 /* =========================
-   マーク変更
+   マーク入力
 ========================= */
 
 markInput.addEventListener(
@@ -768,13 +986,56 @@ markInput.addEventListener(
   function() {
 
     /*
-      新しく置くマーク、
-      または上書きするマークに
-      この文字が使われます。
+      新しく追加するマーク、
+      または既存マークを
+      上書きするときに使用。
 
-      すでに置いたマークは
-      そのまま残します。
+      既存マークはここでは
+      自動変更しません。
     */
+
+  }
+);
+
+
+/* =========================
+   消しゴムボタン
+========================= */
+
+eraseMode.addEventListener(
+  "click",
+  function() {
+
+    isEraseMode =
+      !isEraseMode;
+
+
+    if (isEraseMode) {
+
+      eraseMode.textContent =
+        "🧹 消しゴムON";
+
+      eraseMode.classList.add(
+        "active"
+      );
+
+      board.style.cursor =
+        "crosshair";
+
+    }
+    else {
+
+      eraseMode.textContent =
+        "🧹 消しゴム";
+
+      eraseMode.classList.remove(
+        "active"
+      );
+
+      board.style.cursor =
+        "default";
+
+    }
 
   }
 );
@@ -792,7 +1053,11 @@ imageFile.addEventListener(
       e.target.files[0];
 
 
-    if (!file) return;
+    if (!file) {
+
+      return;
+
+    }
 
 
     const url =
@@ -812,8 +1077,8 @@ imageFile.addEventListener(
 
 
     /*
-      画像変更時は
-      マークを全部消す
+      画像を変更したら
+      マークを全部削除
     */
 
     marks.forEach(
