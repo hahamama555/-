@@ -39,7 +39,6 @@ body {
   z-index: 100;
 
   display: flex;
-
   gap: 8px;
 
   align-items: center;
@@ -82,30 +81,23 @@ button,
   user-select: none;
 
   -webkit-user-select: none;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:active,
 .fileBtn:active {
-
   transform: scale(0.96);
-
 }
 
-
 .fileBtn {
-
   display: inline-flex;
-
   align-items: center;
-
   justify-content: center;
-
 }
 
 .fileBtn input {
-
   display: none;
-
 }
 
 
@@ -122,11 +114,8 @@ button:active,
   gap: 5px;
 
   font-size: 13px;
-
 }
 
-
-/* 2行入力対応 */
 
 #markInput {
 
@@ -155,7 +144,6 @@ button:active,
   color: #111;
 
   font-family: sans-serif;
-
 }
 
 
@@ -172,7 +160,6 @@ button:active,
   gap: 5px;
 
   font-size: 13px;
-
 }
 
 
@@ -191,12 +178,11 @@ button:active,
   background: white;
 
   cursor: pointer;
-
 }
 
 
 /* =========================
-   サイズ
+   新しいマークの初期サイズ
 ========================= */
 
 .size-control {
@@ -210,7 +196,6 @@ button:active,
   font-size: 13px;
 
   color: white;
-
 }
 
 
@@ -219,7 +204,6 @@ button:active,
   width: 100px;
 
   min-width: 100px;
-
 }
 
 
@@ -228,7 +212,6 @@ button:active,
   min-width: 45px;
 
   text-align: center;
-
 }
 
 
@@ -241,7 +224,6 @@ button:active,
   background: #ffdddd;
 
   color: #b00000;
-
 }
 
 
@@ -253,12 +235,11 @@ button:active,
 
   box-shadow:
     0 0 8px rgba(255,0,0,0.7);
-
 }
 
 
 /* =========================
-   画像エリア
+   画像
 ========================= */
 
 #board {
@@ -276,7 +257,6 @@ button:active,
   -webkit-user-select: none;
 
   overflow: hidden;
-
 }
 
 
@@ -292,6 +272,7 @@ button:active,
 
   user-select: none;
 
+  -webkit-user-drag: none;
 }
 
 
@@ -326,11 +307,6 @@ button:active,
 
   font-weight: 900;
 
-  /*
-    ここが重要
-    マークを指でドラッグ可能にする
-  */
-
   pointer-events: auto;
 
   touch-action: none;
@@ -350,31 +326,50 @@ button:active,
   text-shadow:
     1px 1px 2px rgba(0,0,0,0.35);
 
+  /*
+    重要：
+    移動中に拡大・縮小しない
+  */
+  transition: none;
 }
 
 
-/* ドラッグ中 */
+/*
+  ドラッグ中も形を変えない
+*/
 
 .mark.dragging {
 
   cursor: grabbing;
 
-  transform:
-    translate(-50%, -50%)
-    scale(1.08);
+  transform: translate(-50%, -50%);
 
   z-index: 50;
+}
+
+
+/* =========================
+   選択中
+========================= */
+
+.mark.selected {
+
+  outline: 2px dashed #ffff00;
+
+  outline-offset: 3px;
 
 }
 
 
-/* 上書きした時 */
+/* =========================
+   上書き表示
+========================= */
 
 .mark.overwrite-target {
 
-  outline: 3px dashed #ffff00;
+  outline: 3px dashed #00ff00;
 
-  outline-offset: 2px;
+  outline-offset: 3px;
 
 }
 
@@ -400,7 +395,6 @@ button:active,
   line-height: 1.5;
 
   text-align: center;
-
 }
 
 
@@ -415,7 +409,6 @@ button:active,
     gap: 6px;
 
     padding: 6px;
-
   }
 
 
@@ -425,7 +418,6 @@ button:active,
     padding: 8px 10px;
 
     font-size: 13px;
-
   }
 
 
@@ -434,7 +426,6 @@ button:active,
   .size-control {
 
     font-size: 12px;
-
   }
 
 
@@ -445,7 +436,6 @@ button:active,
     min-height: 54px;
 
     font-size: 18px;
-
   }
 
 
@@ -454,7 +444,6 @@ button:active,
     width: 40px;
 
     height: 36px;
-
   }
 
 
@@ -463,7 +452,6 @@ button:active,
     width: 85px;
 
     min-width: 85px;
-
   }
 
 
@@ -472,7 +460,6 @@ button:active,
     font-size: 12px;
 
     padding: 6px;
-
   }
 
 }
@@ -537,11 +524,11 @@ button:active,
   </div>
 
 
-  <!-- サイズ -->
+  <!-- 新規マークのサイズ -->
 
   <div class="size-control">
 
-    📏 サイズ
+    📏 初期サイズ
 
     <input
       type="range"
@@ -584,7 +571,6 @@ button:active,
 
   </button>
 
-
 </div>
 
 
@@ -594,13 +580,11 @@ button:active,
 
 <div class="help">
 
-  画像をタップ → マーク追加　
+  1本指でドラッグ＝移動　
   ／　
-  マークをドラッグ → 自由に移動　
+  2本指でピンチ＝そのマークだけ拡大・縮小　
   ／　
-  マークを軽くタップ → 上書き　
-  ／　
-  🧹消しゴム → 削除
+  軽くタップ＝上書き
 
 </div>
 
@@ -622,7 +606,6 @@ button:active,
 
 
 <script>
-
 
 /* =========================
    要素
@@ -674,7 +657,7 @@ let isEraseMode = false;
 
 
 /* =========================
-   マーク文字取得
+   マーク文字
 ========================= */
 
 function getMarkText() {
@@ -689,7 +672,6 @@ function getMarkText() {
   }
 
   return text;
-
 }
 
 
@@ -707,55 +689,150 @@ function createMark(x, y) {
     "mark";
 
 
+  /* 文字 */
+
   mark.textContent =
     getMarkText();
 
 
+  /* 位置 */
+
   mark.style.left =
     x + "px";
-
 
   mark.style.top =
     y + "px";
 
 
-  mark.style.fontSize =
-    markSize.value + "px";
+  /* サイズ */
 
+  const initialSize =
+    Number(markSize.value);
+
+  mark.style.fontSize =
+    initialSize + "px";
+
+
+  /* 色 */
 
   mark.style.color =
     markColor.value;
 
 
-  /*
-    マークの位置を
-    board内の座標として保存
-  */
+  /* データ保存 */
 
   mark.dataset.x = x;
 
   mark.dataset.y = y;
 
+  mark.dataset.size =
+    initialSize;
 
-  /* =========================
-     ドラッグ用変数
-  ========================= */
 
-  let dragging = false;
+  /*
+    このマークを操作している
+    指の情報
+  */
 
-  let moved = false;
+  const pointers =
+    new Map();
 
-  let startPointerX = 0;
 
-  let startPointerY = 0;
+  let startX = 0;
+
+  let startY = 0;
 
   let startMarkX = 0;
 
   let startMarkY = 0;
 
+  let startSize = initialSize;
+
+  let startDistance = 0;
+
+  let moved = false;
+
+  let pinchStarted = false;
+
 
   /* =========================
-     指を押した
+     2点間の距離
+  ========================= */
+
+  function getDistance() {
+
+    const values =
+      Array.from(
+        pointers.values()
+      );
+
+    if (values.length < 2) {
+
+      return 0;
+
+    }
+
+    const p1 = values[0];
+
+    const p2 = values[1];
+
+    const dx =
+      p2.x - p1.x;
+
+    const dy =
+      p2.y - p1.y;
+
+    return Math.sqrt(
+      dx * dx + dy * dy
+    );
+
+  }
+
+
+  /* =========================
+     1点の座標
+  ========================= */
+
+  function getAveragePoint() {
+
+    const values =
+      Array.from(
+        pointers.values()
+      );
+
+    if (values.length === 0) {
+
+      return null;
+
+    }
+
+    let x = 0;
+
+    let y = 0;
+
+    values.forEach(
+      function(p) {
+
+        x += p.x;
+
+        y += p.y;
+
+      }
+    );
+
+    return {
+
+      x: x / values.length,
+
+      y: y / values.length
+
+    };
+
+  }
+
+
+  /* =========================
+     pointerdown
   ========================= */
 
   mark.addEventListener(
@@ -767,10 +844,14 @@ function createMark(x, y) {
       e.stopPropagation();
 
 
-      /*
-        ポインターを
-        このマークが保持
-      */
+      pointers.set(
+        e.pointerId,
+        {
+          x: e.clientX,
+          y: e.clientY
+        }
+      );
+
 
       try {
 
@@ -781,44 +862,169 @@ function createMark(x, y) {
       } catch(error) {}
 
 
-      dragging = false;
+      /*
+        最初の指
+      */
 
-      moved = false;
+      if (pointers.size === 1) {
+
+        startX =
+          e.clientX;
+
+        startY =
+          e.clientY;
+
+        startMarkX =
+          parseFloat(
+            mark.dataset.x
+          );
+
+        startMarkY =
+          parseFloat(
+            mark.dataset.y
+          );
+
+        startSize =
+          Number(
+            mark.dataset.size
+          );
+
+        moved = false;
+
+        pinchStarted = false;
+
+      }
 
 
-      startPointerX =
-        e.clientX;
+      /*
+        2本目の指
+        → ピンチ開始
+      */
 
+      if (pointers.size === 2) {
 
-      startPointerY =
-        e.clientY;
+        startDistance =
+          getDistance();
 
+        startSize =
+          Number(
+            mark.dataset.size
+          );
 
-      startMarkX =
-        parseFloat(mark.dataset.x);
+        pinchStarted = true;
 
+        moved = true;
 
-      startMarkY =
-        parseFloat(mark.dataset.y);
+        mark.classList.add(
+          "selected"
+        );
+
+      }
 
     }
   );
 
 
   /* =========================
-     指を動かす
+     pointermove
   ========================= */
 
   mark.addEventListener(
     "pointermove",
     function(e) {
 
+      if (
+        !pointers.has(
+          e.pointerId
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      e.preventDefault();
+
+      e.stopPropagation();
+
+
       /*
-        pointerdownしていない場合
+        指の位置を更新
       */
 
+      pointers.set(
+        e.pointerId,
+        {
+          x: e.clientX,
+          y: e.clientY
+        }
+      );
+
+
+      /* =====================
+         2本指
+         → サイズ変更
+      ===================== */
+
       if (
-        startPointerX === null
+        pointers.size >= 2
+      ) {
+
+        const distance =
+          getDistance();
+
+
+        if (
+          startDistance > 0 &&
+          distance > 0
+        ) {
+
+          const scale =
+            distance /
+            startDistance;
+
+
+          let newSize =
+            startSize * scale;
+
+
+          /*
+            8〜150px
+          */
+
+          newSize =
+            Math.max(
+              8,
+              Math.min(
+                150,
+                newSize
+              )
+            );
+
+
+          mark.style.fontSize =
+            newSize + "px";
+
+
+          mark.dataset.size =
+            newSize;
+
+        }
+
+
+        return;
+
+      }
+
+
+      /* =====================
+         1本指
+         → 移動
+      ===================== */
+
+      if (
+        pinchStarted
       ) {
 
         return;
@@ -827,24 +1033,17 @@ function createMark(x, y) {
 
 
       const dx =
-        e.clientX - startPointerX;
+        e.clientX - startX;
 
 
       const dy =
-        e.clientY - startPointerY;
+        e.clientY - startY;
 
-
-      /*
-        少し動いたら
-        ドラッグ開始
-      */
 
       if (
         Math.abs(dx) > 5 ||
         Math.abs(dy) > 5
       ) {
-
-        dragging = true;
 
         moved = true;
 
@@ -855,7 +1054,7 @@ function createMark(x, y) {
       }
 
 
-      if (!dragging) {
+      if (!moved) {
 
         return;
 
@@ -863,48 +1062,23 @@ function createMark(x, y) {
 
 
       /*
-        boardの現在サイズ
+        新しい位置
       */
 
       const rect =
         board.getBoundingClientRect();
 
 
-      /*
-        画面上の移動量を
-        boardの座標に変換
-
-        スマホで画像が縮小表示
-        されていても正しく動く
-      */
-
-      const scaleX =
-        rect.width /
-        base.naturalWidth;
-
-
-      /*
-        実際に表示されている
-        boardの比率を使用
-      */
-
-      const ratio =
-        rect.width /
-        base.offsetWidth;
-
-
       let newX =
-        startMarkX +
-        dx;
+        startMarkX + dx;
 
 
       let newY =
-        startMarkY +
-        dy;
+        startMarkY + dy;
 
 
       /*
-        画像の範囲内に収める
+        画像の中に収める
       */
 
       newX =
@@ -947,7 +1121,7 @@ function createMark(x, y) {
 
 
   /* =========================
-     指を離した
+     pointerup
   ========================= */
 
   mark.addEventListener(
@@ -959,25 +1133,40 @@ function createMark(x, y) {
       e.stopPropagation();
 
 
+      pointers.delete(
+        e.pointerId
+      );
+
+
+      /*
+        まだ指が残っている
+        → 操作継続
+      */
+
+      if (
+        pointers.size > 0
+      ) {
+
+        return;
+
+      }
+
+
       mark.classList.remove(
         "dragging"
       );
 
 
       /*
-        ドラッグした場合は
+        動かした場合は
         上書きしない
       */
 
       if (moved) {
 
-        dragging = false;
-
         moved = false;
 
-        startPointerX = null;
-
-        startPointerY = null;
+        pinchStarted = false;
 
         return;
 
@@ -998,20 +1187,14 @@ function createMark(x, y) {
 
 
       /*
-        動かしていない場合は
-        上書き
+        軽くタップ
+        → 上書き
       */
 
       overwriteMark(mark);
 
 
-      dragging = false;
-
-      moved = false;
-
-      startPointerX = null;
-
-      startPointerY = null;
+      pinchStarted = false;
 
     }
   );
@@ -1023,19 +1206,21 @@ function createMark(x, y) {
 
   mark.addEventListener(
     "pointercancel",
-    function() {
+    function(e) {
 
-      dragging = false;
+      pointers.delete(
+        e.pointerId
+      );
 
-      moved = false;
 
       mark.classList.remove(
         "dragging"
       );
 
-      startPointerX = null;
 
-      startPointerY = null;
+      moved = false;
+
+      pinchStarted = false;
 
     }
   );
@@ -1052,7 +1237,10 @@ function createMark(x, y) {
    マーク追加
 ========================= */
 
-function addMark(clientX, clientY) {
+function addMark(
+  clientX,
+  clientY
+) {
 
   const rect =
     board.getBoundingClientRect();
@@ -1066,7 +1254,10 @@ function addMark(clientX, clientY) {
     clientY - rect.top;
 
 
-  createMark(x, y);
+  createMark(
+    x,
+    y
+  );
 
 }
 
@@ -1085,8 +1276,17 @@ function overwriteMark(mark) {
     markColor.value;
 
 
+  /*
+    上書き時は
+    現在のサイズに変更
+  */
+
   mark.style.fontSize =
     markSize.value + "px";
+
+
+  mark.dataset.size =
+    markSize.value;
 
 
   mark.classList.add(
@@ -1142,11 +1342,13 @@ board.addEventListener(
   function(e) {
 
     /*
-      マーク自身は無視
+      マークをタップした場合
     */
 
     if (
-      e.target.classList.contains("mark")
+      e.target.classList.contains(
+        "mark"
+      )
     ) {
 
       return;
@@ -1169,8 +1371,7 @@ board.addEventListener(
 
 
     /*
-      消しゴム中は
-      新しいマークを作らない
+      消しゴム中は追加しない
     */
 
     if (isEraseMode) {
@@ -1190,7 +1391,7 @@ board.addEventListener(
 
 
 /* =========================
-   サイズ変更
+   新しいマークのサイズ
 ========================= */
 
 markSize.addEventListener(
@@ -1204,15 +1405,13 @@ markSize.addEventListener(
     sizeValue.textContent =
       size + "px";
 
+    /*
+      ここでは既存マークを
+      変更しない
 
-    marks.forEach(
-      function(mark) {
-
-        mark.style.fontSize =
-          size + "px";
-
-      }
-    );
+      → 各マークのサイズを
+        独立させるため
+    */
 
   }
 );
@@ -1226,18 +1425,11 @@ markColor.addEventListener(
   "input",
   function() {
 
-    const color =
-      this.value;
+    /*
+      色も新しく置くマーク用
 
-
-    marks.forEach(
-      function(mark) {
-
-        mark.style.color =
-          color;
-
-      }
-    );
+      既存マークは変更しない
+    */
 
   }
 );
@@ -1260,7 +1452,6 @@ eraseMode.addEventListener(
       eraseMode.textContent =
         "🧹 消しゴムON";
 
-
       eraseMode.classList.add(
         "active"
       );
@@ -1270,7 +1461,6 @@ eraseMode.addEventListener(
 
       eraseMode.textContent =
         "🧹 消しゴム";
-
 
       eraseMode.classList.remove(
         "active"
